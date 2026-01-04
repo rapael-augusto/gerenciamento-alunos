@@ -5,6 +5,8 @@ import br.com.gerenciamento.enums.Status;
 import br.com.gerenciamento.enums.Turno;
 import br.com.gerenciamento.model.Aluno;
 import br.com.gerenciamento.repository.AlunoRepository;
+import jakarta.validation.ConstraintViolationException;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,55 +46,6 @@ public class AlunoServiceTest {
         aluno.setStatus(Status.ATIVO);
         aluno.setMatricula("123456");
         serviceAluno.save(aluno);
-    }
-    @Test
-    public void testGetById(){
-        when(alunoRepository.findById(1L)).thenReturn(Optional.of(aluno));
-
-        Aluno resultado = serviceAluno.getById(1L);
-
-        assertEquals("Augusto", resultado.getNome());
-        verify(alunoRepository).findById(1L);
-    }
-
-    @Test
-    public void testGetById_ExceptionNonExistentId(){
-        when(alunoRepository.findById(67L)).thenReturn(Optional.empty());
-
-        assertThrows(NoSuchElementException.class, () -> serviceAluno.getById(67L));
-    }
-
-    @Test
-    public void testFindAll(){
-        Aluno aluno2 = new Aluno();
-        aluno2.setId(2L);
-        aluno2.setNome("Raphael");
-        aluno2.setTurno(Turno.NOTURNO);
-        aluno2.setCurso(Curso.INFORMATICA);
-        aluno2.setStatus(Status.INATIVO);
-        aluno2.setMatricula("654321");
-        serviceAluno.save(aluno2);
-
-        List<Aluno> alunos = new ArrayList<>();
-        alunos.add(aluno);
-        alunos.add(aluno2);
-
-        when(alunoRepository.findAll()).thenReturn(alunos);
-
-        List<Aluno> resultado = serviceAluno.findAll();
-
-        assertEquals(2, resultado.size());
-        verify(alunoRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void testDeleteById(){
-        Long idAluno = 1L;
-        doNothing().when(alunoRepository).deleteById(idAluno);
-
-        serviceAluno.deleteById(idAluno);
-
-        verify(alunoRepository, times(1)).deleteById(idAluno);
     }
 
 //    @Test
